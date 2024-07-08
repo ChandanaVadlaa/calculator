@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="button" data-value="7">7</button>
+            <button class="button" data-value="8">8</button>
+            <button class="button" data-value="9">9</button>
+            <button class="button operator" data-value="/">÷</button>
+            <button class="button" data-value="4">4</button>
+            <button class="button" data-value="5">5</button>
+            <button class="button" data-value="6">6</button>
+            <button class="button operator" data-value="*">×</button>
+            <button class="button" data-value="1">1</button>
+            <button class="button" data-value="2">2</button>
+            <button class="button" data-value="3">3</button>
+            <button class="button operator" data-value="-">-</button>
+            <button class="button" data-value="0">0</button>
+            <button class="button" data-value=".">.</button>
+            <button class="button" id="clear">C</button>
+            <button class="button operator" data-value="+">+</button>
+            <button class="button equal" id="equal">=</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.calculator {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.display {
+    background-color: #333;
+    color: #fff;
+    text-align: right;
+    padding: 20px;
+    font-size: 2em;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+.button {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 20px;
+    font-size: 1.5em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #ccc;
+}
+
+.operator {
+    background-color: #ff9500;
+    color: #fff;
+}
+
+.operator:hover {
+    background-color: #e08e00;
+}
+
+.equal {
+    grid-column: span 2;
+    background-color: #34c759;
+    color: #fff;
+}
+
+.equal:hover {
+    background-color: #28a745;
+}
+const display = document.getElementById('display');
+const buttons = Array.from(document.getElementsByClassName('button'));
+
+let currentInput = '';
+let previousInput = '';
+let operator = '';
+
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const value = button.getAttribute('data-value');
+
+        if (value === 'C') {
+            currentInput = '';
+            previousInput = '';
+            operator = '';
+            display.innerText = '0';
+        } else if (value === '=') {
+            if (currentInput && previousInput && operator) {
+                currentInput = eval(`${previousInput}${operator}${currentInput}`);
+                display.innerText = currentInput;
+                previousInput = '';
+                operator = '';
+            }
+        } else if (button.classList.contains('operator')) {
+            if (currentInput) {
+                if (previousInput) {
+                    currentInput = eval(`${previousInput}${operator}${currentInput}`);
+                    display.innerText = currentInput;
+                }
+                previousInput = currentInput;
+                currentInput = '';
+                operator = value;
+            }
+        } else {
+            currentInput += value;
+            display.innerText = currentInput;
+        }
+    });
+});
